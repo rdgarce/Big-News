@@ -78,38 +78,38 @@ class WNAfetcher:
     def _ll_fetch(self, number) -> (int, dict, dict | None):
         
         config = self._fetch_config
-        assert config['language'] is not None and number is not None
+        assert config['language'] and number
 
-        base_url = "https://api.worldnewsapi.com/search-news"  + \
-                        f"?language={str(config['language'])}" + \
-                        f"&offset={str(self._next_article)}"   + \
-                        f"&number={str(number)}"
+        base_url = "https://api.worldnewsapi.com/search-news" + \
+                   "?language=" + str(config['language'])     + \
+                   "&offset=" + str(self._next_article)       + \
+                   "&number=" + str(number)
+        
         custom = ""
-    
         if config['text'] is not None:
-            custom += f"&text={str(config['text'])}"
+            custom += "&text=" + str(config['text'])
         if config['source_countries'] is not None:
-            custom += f"&source-countries={str(config['source_countries'])}"
+            custom += "&source-countries=" + str(config['source_countries'])
         if config['min_sentiment'] is not None:
-            custom += f"&min-sentiment={str(config['min_sentiment'])}"
+            custom += "&min-sentiment=" + str(config['min_sentiment'])
         if config['max_sentiment'] is not None:
-            custom += f"&max-sentiment={str(config['max_sentiment'])}"
+            custom += "&max-sentiment=" + str(config['max_sentiment'])
         if config['earliest_publish_date'] is not None:
-            custom += f"&earliest-publish-date={config['earliest_publish_date'].strftime("%Y-%m-%d")}"
+            custom += "&earliest-publish-date=" + config['earliest_publish_date'].strftime("%Y-%m-%d")
         if config['latest_publish_date'] is not None:
-            custom += f"&latest-publish-date={config['latest_publish_date'].strftime("%Y-%m-%d")}"
+            custom += "&latest-publish-date=" + config['latest_publish_date'].strftime("%Y-%m-%d")
         if config['news_sources'] is not None:
-            custom += f"&news-sources={str(config['news_sources'])}"
+            custom += "&news-sources=" + str(config['news_sources'])
         if config['authors'] is not None:
-            custom += f"&authors={str(config['authors'])}"
+            custom += "&authors=" + str(config['authors'])
         if config['entities'] is not None:
-            custom += f"&entities={str(config['entities'])}"
+            custom += "&entities=" + str(config['entities'])
         if config['location_filter'] is not None:
-            custom += f"&location-filter={str(config['location_filter'])}"
+            custom += "&location-filter=" + str(config['location_filter'])
         if config['sort'] is not None:
-            custom += f"&sort={str(config['sort'])}"
+            custom += "&sort=" + str(config['sort'])
         if config['sort_direction'] is not None:
-            custom += f"&sort-direction={str(config['sort_direction'])}"
+            custom += "&sort-direction=" + str(config['sort_direction'])
         
         full_url = base_url + custom
         response = requests.get(full_url, headers={'x-api-key': self._apikey})
@@ -120,7 +120,7 @@ class WNAfetcher:
             return sc, headers, response.json()
         except:
             return sc, headers, None
-    
+
     def fetch_batch(self) -> list | None:
         """
         Returns a list of articles consisting of at maximum 100 elements
