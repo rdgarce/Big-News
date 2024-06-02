@@ -48,13 +48,13 @@ if __name__ == "__main__":
         lan = query['language']
         epd = query['earliest_publish_date']
         lpd = query['latest_publish_date']
-        logging.info(f"Extracted {len(articles)} articles with \
-                        language = {lan}, \
-                        earliest_publish_date = {epd}, \
-                        latest_publish_date = {lpd}")
+        logging.info(f"Extracted {len(articles)} articles with " +
+                     f"language = {lan}, "                       +
+                     f"earliest_publish_date = {epd}, "          +
+                     f"latest_publish_date = {lpd}")
         
         q_len = queue.push_batch(articles)
-        logging.info(f"LOG: Reliable article queue now has {q_len} elements")
+        logging.info(f"Reliable article queue now has {q_len} elements")
 
         # Set epd and lpd one week in the past (10 news per week)
         epd = epd - one_week

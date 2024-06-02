@@ -75,7 +75,7 @@ class WNAfetcher:
             config = {
                 'next_article': self._next_article,
                 'total_num_articles': self._total_num_articles,
-                'fetch_config': self._fetch_config
+                'fetch_config': self._fetch_config.copy()
             }
             config['fetch_config']['earliest_publish_date'] = \
                 config['fetch_config']['earliest_publish_date'].strftime("%Y-%m-%d")
