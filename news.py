@@ -25,16 +25,17 @@ class WNAfetcher:
             'sort_direction': None
         }
 
-    def reconfig(self, language, text = None, source_countries = None,
+    def get_query(self) -> dict:
+        return self._fetch_config
+        
+    def config_query(self, language, text = None, source_countries = None,
                 min_sentiment = None, max_sentiment = None, earliest_publish_date : datetime = None,
                 latest_publish_date : datetime = None, news_sources = None, authors = None,
                 entities = None, location_filter = None, sort = None, sort_direction = None):
         """
-        Reconfigure the instance for querying articles with the specified attributes.
-        Note: When this function is called, the fetching will start again from
-        the top of the queried articles list.
+        Configure the instance for querying articles with the specified attributes.
+        Note: Non specified parameters are set to None
         """
-        self._next_article = 0
         self._fetch_config.update({
             'language': language,
             'text': text,
@@ -50,6 +51,13 @@ class WNAfetcher:
             'sort': sort,
             'sort_direction': sort_direction
         })
+
+    def reset_offset(self):
+        """
+        The fetching will start again from the top of the queried articles list.
+        """
+        self._next_article = 0
+        self._total_num_articles = 0xffffffff #Initial very high value. Updated on each query
 
     def load_config(self, file_name = "WNAfetcher.cfg"):
         with open(file_name, "r") as file:
@@ -121,15 +129,15 @@ class WNAfetcher:
         except:
             return sc, headers, None
 
-    def fetch_batch(self) -> list | None:
+    def fetch_batch(self, batch_size: int) -> list | None:
         """
-        Returns a list of articles consisting of at maximum 100 elements
+        Returns a list of articles consisting of min(batch_size,100) elements
         or None if you have no more credits.
         """
         if self._next_article >= self._total_num_articles:
             return []
 
-        sc, _, bd = self._ll_fetch(100)
+        sc, _, bd = self._ll_fetch(batch_size)
 
         if sc != 200 or bd is None:
             return None
