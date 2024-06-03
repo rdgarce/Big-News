@@ -213,7 +213,7 @@ def chunk_article(article,max_chunk_size=500):
     return chunks
 
 # Funzione che estrae le triple dal testo del chunk
-def estrai_triple(raw_text_chunk,data,link,last_check=True):
+def estrai_triple(raw_text_chunk,data,link):
     triple_raw=genera_tripla(raw_text_chunk)
     #print("Triple raw estratte:")
     #print(triple_raw)
@@ -227,13 +227,12 @@ def estrai_triple(raw_text_chunk,data,link,last_check=True):
     if not triple_final:
       return []
     #print(triple_final)
-    if last_check:
-        triple_final=uniforma_relazioni(triple_final)
+    triple_final=uniforma_relazioni(triple_final)
     #print(triple_final)
     return string_to_vector(triple_final,data,link)
 
 #Funzione che processa il singolo Articolo
-def process_articles(articles,max_attempts=2,chunk_size=1200,last_check=True):
+def process_articles(articles,max_attempts=2):
     table_data = [["Entity 1", "Category 1", "Relation", "Sentiment", "Entity 2", "Category 2", "Date", "Link"]]
     triple_totali = []
 
@@ -245,14 +244,16 @@ def process_articles(articles,max_attempts=2,chunk_size=1200,last_check=True):
         gc.collect()
         max_attempts = 2
         attempts = 0
-        chunks = chunk_article(article, chunk_size)
-
+        chunks = chunk_article(article, 1120)
+        print("Prova")
         # Utilizzo di tqdm per la barra di caricamento dei chunk
         for i, chunk in enumerate(tqdm(chunks, desc=f"Processing Chunks for Article {j+1}", leave=False)):
+            gc.collect()
+            print("Lunghezza del chunk:",len(chunk['text']))
             triple_chunk = []
             attempts = 0
             while attempts < max_attempts and not triple_chunk:
-                triple_chunk = estrai_triple(chunk['text'], chunk['date'], chunk['link'],last_check)
+                triple_chunk = estrai_triple(chunk['text'], chunk['date'], chunk['link'])
                 attempts += 1
             if triple_chunk:
                 print(f"Triple estratte dal Chunk {i+1} dell'articolo {j+1}")
