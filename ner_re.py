@@ -280,8 +280,8 @@ if __name__ == "__main__":
     #variabili di ingresso
     chunk_size = int(sys.argv[1])
     max_attempts = int(sys.argv[2])
-    last_check = sys.argv[3]  
-
+    last_check = sys.argv[3] == "True"
+    print("Last check settato su :",last_check)
     #credenziali dalle variabili d'ambiente
     redis_host = os.getenv("RESID_HOST")
     redis_port = os.getenv("REDIS_PORT")
