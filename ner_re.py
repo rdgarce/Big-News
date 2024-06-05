@@ -2,6 +2,7 @@ import torch
 import gc
 import transformers
 import re
+import logging
 import os
 from article import ATCqueue
 from redis import Redis
@@ -10,7 +11,7 @@ from tqdm import tqdm
 from liste import *
 from gcontrol import *
 model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
-
+logging.getLogger("transformers").setLevel(logging.ERROR)
 # Classe istanza della tripla
 class Instance:
     def __init__(self, entity1, category1, relation,sentiment, entity2, category2, data, link):
@@ -273,7 +274,7 @@ def process_articles(articles,max_attempts=2,chunk_size=1200,last_check=True):
 if __name__ == "__main__":
     import sys
 
-    if len(sys.argv) != 5:
+    if len(sys.argv) != 4:
         print("Usage: script.py <chunk_size> <max_attempts> <last_check>")
         exit(-1)
 
