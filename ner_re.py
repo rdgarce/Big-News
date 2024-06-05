@@ -284,7 +284,7 @@ if __name__ == "__main__":
     last_check = sys.argv[3] == "True"
     print("Last check settato su :",last_check)
     #credenziali dalle variabili d'ambiente
-    redis_host = os.getenv("RESID_HOST")
+    redis_host = os.getenv("REDIS_HOST")
     redis_port = os.getenv("REDIS_PORT")
     redis_psw = os.getenv("REDIS_PASSWORD")
     neo4j_uri=os.getenv("NEO4J_URI")
