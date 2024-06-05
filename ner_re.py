@@ -274,20 +274,15 @@ def process_articles(articles,max_attempts=2,chunk_size=1200,last_check=True):
 if __name__ == "__main__":
     import sys
 
-    if len(sys.argv) != 5:
-        print("Usage: script.py <chunk_size> <max_attempts> <last_check> <num_iter>")
+    if len(sys.argv) != 4:
+        print("Usage: script.py <chunk_size> <max_attempts> <last_check>")
         exit(-1)
 
     #variabili di ingresso
     chunk_size = int(sys.argv[1])
     max_attempts = int(sys.argv[2])
     last_check = sys.argv[3] == "True"
-    num_iter = int(sys.argv[4])
-    print("Numero di iterazioni=:",last_check)
     print("Last check settato su :",last_check)
-    
-
-
     #credenziali dalle variabili d'ambiente
     redis_host = os.getenv("REDIS_HOST")
     redis_port = os.getenv("REDIS_PORT")
@@ -304,21 +299,26 @@ if __name__ == "__main__":
         Redis(host=redis_host, port=redis_port, password=redis_psw)
     )
 
-for _ in range(num_iter):
+    # Pop del Batch di articoli
     reference, articles = queue.pop_batch()
     if not articles:
         print('Nessun Articolo da processare nella Coda')
         exit(0)
 
     triple_articolo = process_articles(articles, max_attempts, chunk_size, last_check)
+    
+    #Backup
+    #reference, articles = queue.peek_batch_from_BU()
+    # Analizzi e pushi le triplette, poi cancelli
 
     # Connessione al database
     driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_pass))
-    with driver.session() as session:
-        for tripla in triple_articolo:
-            result = session.write_transaction(push_triplet, tripla)
-            print(result)
-    
+    for tripla in triple_articolo:
+        result=push_triplet(driver, tripla)
+        print(result)
+
+
     driver.close()
     queue.del_batch_from_BU(reference)
    
+    print(articles)
