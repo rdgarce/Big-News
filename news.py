@@ -26,17 +26,20 @@ class WNAfetcher:
         }
 
     def get_query(self) -> dict:
-        return self._fetch_config
+        """
+        Returns a copy of the current configured query for the fetching process.
+        """
+        return self._fetch_config.copy()
         
-    def config_query(self, language, text = None, source_countries = None,
-                min_sentiment = None, max_sentiment = None, earliest_publish_date : datetime = None,
-                latest_publish_date : datetime = None, news_sources = None, authors = None,
-                entities = None, location_filter = None, sort = None, sort_direction = None):
+    def config_query(self, language, text=None, source_countries=None,
+                min_sentiment=None, max_sentiment=None, earliest_publish_date=None,
+                latest_publish_date=None, news_sources=None, authors=None,
+                entities=None, location_filter=None, sort=None, sort_direction=None):
         """
         Configure the instance for querying articles with the specified attributes.
-        Note: Non specified parameters are set to None
+        Note: For non specified parameters the old configuration will be mantained.
         """
-        self._fetch_config.update({
+        params = {
             'language': language,
             'text': text,
             'source_countries': source_countries,
@@ -50,7 +53,9 @@ class WNAfetcher:
             'location_filter': location_filter,
             'sort': sort,
             'sort_direction': sort_direction
-        })
+        }
+        # Update only the fields that are not None
+        self._fetch_config.update({k: v for k, v in params.items() if v is not None})
 
     def reset_offset(self):
         """
@@ -152,7 +157,7 @@ class WNAfetcher:
         Standardize the give articles list to be compliant to ARTICLE INTERFACE
         """
         std_articles = []
-        if articles is None:
+        if not articles:
             return std_articles
         
         for a in articles:
@@ -160,7 +165,7 @@ class WNAfetcher:
                 {
                 "title": a['title'],
                 "link": a['url'],
-                "date": a['publish_date'],
+                "date": a['publish_date'].split(' ')[0],
                 "text": a['text']
                 }
             )

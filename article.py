@@ -11,6 +11,12 @@ class ATCqueue:
             raise ValueError("redis_conn can not be None!")
         self._r = redis_conn
     
+    def list_len(self) -> int:
+        return self._r.llen("articles")
+    
+    def BU_list_len(self) -> int:
+        return self._r.llen("articles_backup")
+
     def push_batch(self, articles : list) -> int:
         """
         Push a batch of standardized articles to the reliable queue.

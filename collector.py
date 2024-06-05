@@ -16,7 +16,7 @@ if __name__ == "__main__":
     redis_port = os.getenv("COLLECTOR_REDIS_PORT")
     redis_psw = os.getenv("COLLECTOR_REDIS_PASSWORD")
     if not wna_api or not redis_host or not redis_port or not redis_psw:
-        logging.error("Environment variable not defined. Exiting...")
+        logging.error("Environment variables not defined. Exiting...")
         exit(-1)
     redis_port = int(redis_port)
     
@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     logging.info("ATCqueue and WNAfetcher initialized successfully")
 
-    one_week = timedelta(weeks = 1)
+    delta = timedelta(weeks = 1)
 
     try:
         fetcher.load_config()
@@ -35,8 +35,9 @@ if __name__ == "__main__":
     except:
         # If load fails we start again fetching news from today and going back
         fetcher.config_query(language="it",
-                            earliest_publish_date = datetime.now().date() - one_week,
-                            latest_publish_date = datetime.now().date())
+                            earliest_publish_date = datetime.now().date() - delta,
+                            latest_publish_date = datetime.now().date(),
+                            news_sources="notiziegeopolitiche.net")
         fetcher.reset_offset()
         logging.info("Fetcher configuration not found, defaulting to a reset configuration")
 
@@ -57,12 +58,17 @@ if __name__ == "__main__":
         logging.info(f"Reliable article queue now has {q_len} elements")
 
         # Set epd and lpd one week in the past (10 news per week)
-        epd = epd - one_week
-        lpd = lpd - one_week
+        epd = epd - delta
+        lpd = lpd - delta
 
         fetcher.config_query(language = lan, earliest_publish_date = epd,
                                 latest_publish_date = lpd)
         fetcher.reset_offset()
-        fetcher.persist_config()
+        try:
+            fetcher.persist_config()
+            logging.info("Fetcher configuration correctly persited")
+        except:
+            logging.error("There was an error in persisting the fetcher configuration. Exiting...")
+            exit(-1)
 
     logging.info("No more credits. Exiting... Call me in 24h :D")
