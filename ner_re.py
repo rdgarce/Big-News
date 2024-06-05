@@ -2,11 +2,16 @@ import torch
 import gc
 import transformers
 import re
+import logging
+import os
+from article import ATCqueue
+from redis import Redis
 from tabulate import tabulate
 from tqdm import tqdm
 from liste import *
+from gcontrol import *
 model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
-
+logging.getLogger("transformers").setLevel(logging.ERROR)
 # Classe istanza della tripla
 class Instance:
     def __init__(self, entity1, category1, relation,sentiment, entity2, category2, data, link):
@@ -227,6 +232,7 @@ def estrai_triple(raw_text_chunk,data,link,last_check):
     #print(triple_final)
     if last_check:
         triple_final=uniforma_relazioni(triple_final)
+        triple_final=filtra_righe_categorie(triple_final)
     #print(triple_final)
     return string_to_vector(triple_final,data,link)
 
@@ -263,3 +269,53 @@ def process_articles(articles,max_attempts=2,chunk_size=1200,last_check=True):
 
     return triple_totali
 
+
+
+if __name__ == "__main__":
+    import sys
+
+    if len(sys.argv) != 4:
+        print("Usage: script.py <chunk_size> <max_attempts> <last_check>")
+        exit(-1)
+
+    #variabili di ingresso
+    chunk_size = int(sys.argv[1])
+    max_attempts = int(sys.argv[2])
+    last_check = sys.argv[3] == "True"
+    print("Last check settato su :",last_check)
+    #credenziali dalle variabili d'ambiente
+    redis_host = os.getenv("REDIS_HOST")
+    redis_port = os.getenv("REDIS_PORT")
+    redis_psw = os.getenv("REDIS_PASSWORD")
+    neo4j_uri=os.getenv("NEO4J_URI")
+    neo4j_auth=os.getenv("NEO4J_AUTH")
+
+    if not redis_host or not redis_port or not redis_psw:
+        exit(-1)
+    redis_port = int(redis_port)
+
+    queue = ATCqueue(
+        Redis(host=redis_host, port=redis_port, password=redis_psw)
+    )
+
+    # Pop del Batch di articoli
+    reference, articles = queue.pop_batch()
+    if not articles:
+        print('Nessun Articolo da processare nella Coda')
+        exit(0)
+
+    triple_articolo = process_articles(articles, max_attempts, chunk_size, last_check)
+    
+    #Backup
+    #reference, articles = queue.peek_batch_from_BU()
+    # Analizzi e pushi le triplette, poi cancelli
+
+    connector = Neo4jConnector(neo4j_uri, neo4j_auth)
+    for tripla in triple_articolo:
+        result=connector.push_triplet(tripla)
+    print(result)
+
+    connector.close()
+    queue.del_batch_from_BU(reference)
+   
+    print(articles)
