@@ -288,7 +288,8 @@ if __name__ == "__main__":
     redis_port = os.getenv("REDIS_PORT")
     redis_psw = os.getenv("REDIS_PASSWORD")
     neo4j_uri=os.getenv("NEO4J_URI")
-    neo4j_auth=os.getenv("NEO4J_AUTH")
+    neo4j_user=os.getenv("NEO4J_USER")
+    neo4j_pass=os.getenv("NEO4J_PASS")
 
     if not redis_host or not redis_port or not redis_psw:
         exit(-1)
@@ -310,12 +311,14 @@ if __name__ == "__main__":
     #reference, articles = queue.peek_batch_from_BU()
     # Analizzi e pushi le triplette, poi cancelli
 
-    connector = Neo4jConnector(neo4j_uri, neo4j_auth)
+    # Connessione al database
+    driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_pass))
     for tripla in triple_articolo:
-        result=connector.push_triplet(tripla)
-    print(result)
+        result=push_triplet(driver, tripla)
+        print(result)
 
-    connector.close()
+
+    driver.close()
     queue.del_batch_from_BU(reference)
    
     print(articles)
