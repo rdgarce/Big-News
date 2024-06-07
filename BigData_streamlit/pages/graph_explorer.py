@@ -5,12 +5,36 @@ from gquery import *
 from graph_builder import *
 from credentials import *
 from pyvis.network import Network
+import pandas as pd
 import time
 
+def get_record_data(record):
+    source = record['s']['nome'] if 'nome' in record['s'] else str(record['s']['id'])
+    target = record['t']['nome'] if 'nome' in record['t'] else str(record['t']['id'])
+    relationship = record['r'][1]
+    attributi_relazione = record['attributi_relazione']
+    label_e1 = record['label_e1'][0] if 'label_e1' in record else None
+    label_e2 = record['label_e2'][0] if 'label_e2' in record else None
+
+    if attributi_relazione["sentiment"] == 0:
+        risultato = "Sentimento Neutro"
+    elif attributi_relazione["sentiment"] == 1:
+        risultato = "Sentimento Positivo"
+    elif attributi_relazione["sentiment"] == -1:
+        risultato = "Sentimento Negativo"
+
+    return {
+        'Source': source,
+        'Target': target,
+        'Relationship': relationship,
+        'Link': attributi_relazione["link"],
+        'Date': attributi_relazione["data"],
+        'Sentiment': risultato,
+    }
 
 def main():
     html_file_path = "filtered_graph.html"
-    st.header('Graph Builder', divider='blue')
+    st.header('Graph Explorer', divider='blue')
     available_labels = list(colori_labels.keys())
     # Lettura del contenuto del file HTML
     with open(html_file_path, "r") as f:
@@ -48,13 +72,21 @@ def main():
     selected_labels_str = ', '.join([f"'{label}'" for label in selected_labels])
 
 
-    net=build_graph(neo4j_uri,neo4j_user,neo4j_pass,entity_name, start_date_str, end_date_str, selected_labels_str,layout_method)
+    net,data=build_graph(neo4j_uri,neo4j_user,neo4j_pass,entity_name, start_date_str, end_date_str, selected_labels_str,layout_method)
     net.show(html_file_path)
     # Visualizzazione dell'HTML
     with container_graph:
         with open(html_file_path, "r") as f:
             html_content = f.read()
         st.components.v1.html(html_content,height=390)
+    if data:
+        data2 = [get_record_data(record) for record in data]
+        df = pd.DataFrame(data2)
+
+        # Mostra la tabella in Streamlit
+        st.subheader("Triple(Entità1,Relazione,Entità2) estratte", divider='blue')
+        st.dataframe(df)
+
 
 if __name__ == "__main__":
     main()

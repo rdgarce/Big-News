@@ -52,11 +52,11 @@ def build_graph(neo4j_uri,neo4j_user,neo4j_pass,entity_name, start_date_str, end
 
     #Layout di visualizzazione del Grafo
     if layout_method == "force_atlas_2based":
-        net.force_atlas_2based(gravity=-50,node_distance=120, central_gravity=0.00009, spring_length=100, spring_strength=0.08, damping=0.4, overlap=0)
+        net.force_atlas_2based(gravity=-50,node_distance=150, central_gravity=0.00009, spring_length=200, spring_strength=0.08, damping=0.4, overlap=0)
     elif layout_method == "hrepulsion":
         net.hrepulsion(node_distance=120, central_gravity=0.0, spring_length=100, spring_strength=0.01, damping=0.09)
     
-    return net
+    return net,data
 
 def build_full_graph(neo4j_uri,neo4j_user,neo4j_pass,layout_method):
     driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_pass))
@@ -91,7 +91,7 @@ def build_full_graph(neo4j_uri,neo4j_user,neo4j_pass,layout_method):
 
     #Layout di visualizzazione del Grafo
     if layout_method == "force_atlas_2based":
-        net.force_atlas_2based(gravity=-50,node_distance=120, central_gravity=0.00009, spring_length=100, spring_strength=0.08, damping=0.4, overlap=0)
+        net.force_atlas_2based(gravity=-50,node_distance=120, central_gravity=0.09, spring_length=100, spring_strength=0.08, damping=0.4, overlap=0)
     elif layout_method == "hrepulsion":
         net.hrepulsion(node_distance=120, central_gravity=0.0, spring_length=100, spring_strength=0.01, damping=0.09)
     

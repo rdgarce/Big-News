@@ -33,20 +33,52 @@ def get_full_graph(conn):
     
 
 
-def get_nodi_connessi_mese_anno(conn, tipo_nodo, anno, mese):
+def get_nodi_connessi_mese_anno(conn, anno, mese):
     mese_str = f"{anno}-{mese:02}"  # Formatta il mese come "YYYY-MM"
     query = (
         f"""
         MATCH (s)-[r]-(t)
-        WHERE ANY(label IN labels(t) WHERE label = '{tipo_nodo}')
-        AND r.data STARTS WITH '{mese_str}'
-        RETURN s.nome as nome_nodo, COUNT(r) as connessioni
+        WHERE r.data STARTS WITH '{mese_str}'
+        AND s.nome =~ '^[A-Z].*'  // Assicura che il nome del nodo inizi con una lettera maiuscola
+        RETURN s.nome as nome_nodo, COUNT(r) as connessioni , labels(s) as categoria
         ORDER BY connessioni DESC
-        LIMIT 5
+        LIMIT 10
         """
     )
 
     with conn.session() as session:
         result = session.run(query)
-        return [record["nome_nodo"] for record in result]
+        return [(record["nome_nodo"], record["connessioni"],record["categoria"]) for record in result]
+
+def get_graph_statistics(driver):
+    # La query Cypher
+    query = """
+    // Numero totale di nodi
+    MATCH (n)
+    RETURN 'Numero totale di nodi' AS tipo, count(n) AS conteggio
+    UNION
+
+    // Numero totale di relazioni
+    MATCH ()-[r]->()
+    RETURN 'Numero totale di relazioni' AS tipo, count(r) AS conteggio
+    UNION
+
+    // Numero di occorrenze per ciascuna categoria di nodo
+    MATCH (n)
+    RETURN labels(n) AS tipo, count(n) AS conteggio
+    UNION
+
+    // Numero di occorrenze per ciascun tipo di relazione
+    MATCH ()-[r]->()
+    RETURN type(r) AS tipo, count(r) AS conteggio
+    """
+
+    # Funzione per eseguire la query
+    def execute_query(tx):
+        return list(tx.run(query))
+
+    # Connettersi al database e eseguire la query
+    with driver.session() as session:
+        results = session.read_transaction(execute_query)
+        return results
 
