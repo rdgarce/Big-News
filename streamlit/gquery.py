@@ -1,4 +1,6 @@
 from neo4j import GraphDatabase
+import streamlit as st
+from datetime import datetime, timedelta
 
 def get_graph(conn, entity_name, start_date_str, end_date_str, selected_labels_str):
     query = (
@@ -30,8 +32,6 @@ def get_full_graph(conn):
     with conn.session() as session:
         result = session.run(query)
         return result.data()
-    
-
 
 def get_nodi_connessi_mese_anno(conn, anno, mese):
     mese_str = f"{anno}-{mese:02}"  # Formatta il mese come "YYYY-MM"
@@ -82,3 +82,35 @@ def get_graph_statistics(driver):
         results = session.read_transaction(execute_query)
         return results
 
+@st.cache_data
+def get_all_entities_name(_conn):
+    query = "MATCH (p) RETURN p.nome"
+    with _conn.session() as session:
+        result = session.run(query).data()
+    return [x['p.nome'] for x in result]
+
+@st.cache_data
+def get_monthly_count_by_name(_conn, name : str, start_month : datetime,
+                                end_month : datetime):
+
+    assert isinstance(name, str)             and \
+           isinstance(start_month, datetime) and \
+           isinstance(end_month, datetime)
+    
+    months_list = [(start_month + timedelta(days=32 * i)).replace(day=1).strftime("%Y-%m")
+                    for i in range((end_month.year - start_month.year) * 12 + 
+                        end_month.month - start_month.month + 1)]
+    months_list = str(months_list)
+
+    query = f"""
+            WITH {months_list} AS months
+            UNWIND months AS month
+            MATCH (p)-[r]->()
+            WHERE p.nome = '{str(name)}' AND r.data STARTS WITH month
+            RETURN month, COUNT(p) AS count
+            ORDER BY month
+            """
+
+    with _conn.session() as session:
+        result = session.run(query).data()
+    return result

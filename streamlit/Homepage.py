@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit.components.v1 import html
-import datetime
+from datetime import date, date
 import time
 from gquery import *
 from graph_builder import *
@@ -122,11 +122,11 @@ def main():
 
     st.header('Top 10 Entità più citate per mese', divider='blue')
 
-    start_date = datetime.date(2022, 9, 1)
-    end_date = datetime.date.today()
+    start_date = date(2022, 9, 1)
+    end_date = date.today()
 
     # Slider per selezionare la data
-    selected_date = st.slider('Seleziona mese e anno', min_value=start_date, max_value=end_date, value=datetime.date(2023, 9, 1), format="MMM YYYY")
+    selected_date = st.slider('Seleziona mese e anno', min_value=start_date, max_value=end_date, value=date(2023, 9, 1), format="MMM YYYY")
 
     # Estrai anno e mese dalla data selezionata
     selected_year = selected_date.year

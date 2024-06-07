@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit.components.v1 import html
-import datetime
+from datetime import datetime, date
 from gquery import *
 from graph_builder import *
 from credentials import *
@@ -41,8 +41,8 @@ def main():
         html_content = f.read()
 
     # Definire il range di date per il double ended slider
-    start_date = datetime.date(2022, 9, 3)
-    end_date = datetime.date.today()
+    start_date = date(2022, 9, 3)
+    end_date = date.today()
 
     #entity_name = st.text_input("Inserisci il nome dell'entità:")
     col1,col2=st.columns([3,5])
@@ -84,7 +84,7 @@ def main():
         df = pd.DataFrame(data2)
 
         # Mostra la tabella in Streamlit
-        st.subheader("Triple(Entità1,Relazione,Entità2) estratte", divider='blue')
+        st.subheader("Triple(Entità1, Relazione, Entità2) estratte", divider='blue')
         st.dataframe(df)
 
 

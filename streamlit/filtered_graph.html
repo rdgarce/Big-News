@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 380px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"borderWidth": 0, "color": "#7fa7c9", "id": "Joe Biden", "label": "Joe Biden", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#ff6680", "id": "presidente", "label": "presidente", "shape": "dot", "title": "Entit\u00e0_Governativa"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "Angela Merkel", "label": "Angela Merkel", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#ff6680", "id": "Forze speciali", "label": "Forze speciali", "shape": "dot", "title": "Entit\u00e0_Governativa"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "Luiz In\u00e1cio Lula da Silva", "label": "Luiz In\u00e1cio Lula da Silva", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "Premier", "label": "Premier", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "I capi", "label": "I capi", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "famiglie", "label": "famiglie", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#ffe699", "id": "finanziamenti", "label": "finanziamenti", "shape": "dot", "title": "Settore_Economico"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "Lula da Silva", "label": "Lula da Silva", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#99ffab", "id": "paesi in via di sviluppo", "label": "paesi in via di sviluppo", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "angosce", "label": "angosce", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#99ffab", "id": "foreste", "label": "foreste", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffcc", "id": "sicurezza", "label": "sicurezza", "shape": "dot", "title": "Infrastruttura"}, {"borderWidth": 0, "color": "#ffc266", "id": "G20", "label": "G20", "shape": "dot", "title": "Evento"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "discorsi di Joe Biden", "label": "discorsi di Joe Biden", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#99ffab", "id": "Italia", "label": "Italia", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "Il pubblico", "label": "Il pubblico", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#99ffab", "id": "pubblico", "label": "pubblico", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "Biden", "label": "Biden", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "leader", "label": "leader", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#ff6680", "id": "presidente degli Stati Uniti", "label": "presidente degli Stati Uniti", "shape": "dot", "title": "Entit\u00e0_Governativa"}, {"borderWidth": 0, "color": "#ff6680", "id": "presidente democratico", "label": "presidente democratico", "shape": "dot", "title": "Entit\u00e0_Governativa"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "Hun Sen", "label": "Hun Sen", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "Merkel", "label": "Merkel", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "Petro", "label": "Petro", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "Macron", "label": "Macron", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#ffc266", "id": "gara", "label": "gara", "shape": "dot", "title": "Evento"}, {"borderWidth": 0, "color": "#99ffab", "id": "Ucraina", "label": "Ucraina", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#ffc266", "id": "guerra", "label": "guerra", "shape": "dot", "title": "Evento"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "diritti dei lavoratori", "label": "diritti dei lavoratori", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "Lula", "label": "Lula", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#ffc266", "id": "vertice", "label": "vertice", "shape": "dot", "title": "Evento"}, {"borderWidth": 0, "color": "#ffc266", "id": "invasione russa", "label": "invasione russa", "shape": "dot", "title": "Evento"}, {"borderWidth": 0, "color": "#99abff", "id": "condizioni fisiche", "label": "condizioni fisiche", "shape": "dot", "title": "Data_o_Periodo_Temporale"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "figlio", "label": "figlio", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#ff99ff", "id": "frequenza", "label": "frequenza", "shape": "dot", "title": "Misura_o_Quantit\u00e0"}, {"borderWidth": 0, "color": "#99ffcc", "id": "rapporti", "label": "rapporti", "shape": "dot", "title": "Infrastruttura"}, {"borderWidth": 0, "color": "#99ffab", "id": "giorno", "label": "giorno", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#ffc266", "id": "elezioni", "label": "elezioni", "shape": "dot", "title": "Evento"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "i discorsi di Joe Biden", "label": "i discorsi di Joe Biden", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "Hunter Biden", "label": "Hunter Biden", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#ffc266", "id": "soggetto di attenzione mediatica", "label": "soggetto di attenzione mediatica", "shape": "dot", "title": "Evento"}, {"borderWidth": 0, "color": "#ffc266", "id": "guai", "label": "guai", "shape": "dot", "title": "Evento"}]);
+                  edges = new vis.DataSet([{"from": "Joe Biden", "label": "essere", "title": "https://www.notiziegeopolitiche.net/cuba-cosa-restera-del-vertice-g77china/\n2023-09-19\nSentimento Neutro", "to": "presidente"}, {"from": "Joe Biden", "label": "essere", "title": "https://www.notiziegeopolitiche.net/canada-il-premier-trudeau-ha-condannato-lattacco-a-un-centro-comunitario-ebraico/\n2023-11-28\nSentimento Neutro", "to": "Angela Merkel"}, {"from": "Joe Biden", "label": "essere", "title": "https://www.notiziegeopolitiche.net/germania-smantellata-una-rete-eversiva-di-estrema-destra-in-programma-cera-lassalto-al-bundestag/\n2022-12-07\nSentimento Neutro", "to": "Forze speciali"}, {"from": "Joe Biden", "label": "incontrare", "title": "https://www.notiziegeopolitiche.net/cuba-cosa-restera-del-vertice-g77china/\n2023-09-19\nSentimento Neutro", "to": "Luiz In\u00e1cio Lula da Silva"}, {"from": "Joe Biden", "label": "incontrare", "title": "https://www.notiziegeopolitiche.net/cambogia-opposizione-esclusa-porta-in-faccia-alloccidente/\n2023-05-20\nSentimento Neutro", "to": "Premier"}, {"from": "Joe Biden", "label": "incontrare", "title": "https://www.notiziegeopolitiche.net/cambogia-opposizione-esclusa-porta-in-faccia-alloccidente/\n2023-05-20\nSentimento Neutro", "to": "I capi"}, {"from": "Joe Biden", "label": "supportare_ostacolare", "title": "https://www.notiziegeopolitiche.net/arabia-saudita-nuovi-progetti-di-ksrelief-nel-mondo/\n2023-11-21\nSentimento Positivo", "to": "famiglie"}, {"from": "Joe Biden", "label": "supportare_ostacolare", "title": "https://www.notiziegeopolitiche.net/119820-2/\n2023-10-04\nSentimento Positivo", "to": "finanziamenti"}, {"from": "Joe Biden", "label": "supportare_ostacolare", "title": "https://www.notiziegeopolitiche.net/brasile-i-4-motivi-del-flirt-con-gli-usa/\n2023-09-23\nSentimento Positivo", "to": "Lula da Silva"}, {"from": "Joe Biden", "label": "supportare_ostacolare", "title": "https://www.notiziegeopolitiche.net/g20-accordo-per-collegare-medio-oriente-e-asia-meridionale-mediante-ferrovie-e-porti/\n2023-09-10\nSentimento Positivo", "to": "paesi in via di sviluppo"}, {"from": "Joe Biden", "label": "avere", "title": "https://www.notiziegeopolitiche.net/usa-salta-il-patteggiamento-di-hunter-biden-guai-per-il-padre/\n2023-08-18\nSentimento Neutro", "to": "angosce"}, {"from": "Joe Biden", "label": "discutere", "title": "https://www.notiziegeopolitiche.net/congo-brazzaville-summit-tre-bacini-contro-la-deforestazione-e-la-distruzione-foreste/\n2023-10-27\nSentimento Neutro", "to": "foreste"}, {"from": "Joe Biden", "label": "investire_tagliare", "title": "https://www.notiziegeopolitiche.net/gb-tagli-alla-sicurezza-in-vista-delle-elezioni/\n2024-03-20\nSentimento Negativo", "to": "sicurezza"}, {"from": "Joe Biden", "label": "partecipare", "title": "https://www.notiziegeopolitiche.net/g20-il-presidente-indonesiano-widodo-ha-confermato-che-putin-non-partecipera-di-persona-al-vertice/\n2022-11-12\nSentimento Neutro", "to": "G20"}, {"from": "discorsi di Joe Biden", "label": "apprezzare_disprezzare", "title": "https://www.notiziegeopolitiche.net/azerbaijan-litalia-alleurasian-economic-forum/\n2022-10-29\nSentimento Positivo", "to": "Italia"}, {"from": "discorsi di Joe Biden", "label": "apprezzare_disprezzare", "title": "https://www.notiziegeopolitiche.net/gaza-la-strage-di-netanyahu-e-il-guadagno-politico-di-hamas/\n2024-03-08\nSentimento Positivo", "to": "Il pubblico"}, {"from": "discorsi di Joe Biden", "label": "apprezzare_disprezzare", "title": "https://www.notiziegeopolitiche.net/cosa-sta-accadendo-in-kosovo/\n2023-06-02\nSentimento Positivo", "to": "pubblico"}, {"from": "Biden", "label": "essere", "title": "https://www.notiziegeopolitiche.net/elezioni-usa-match-tra-biden-e-trump/\n2023-12-07\nSentimento Neutro", "to": "presidente"}, {"from": "Biden", "label": "essere", "title": "https://www.notiziegeopolitiche.net/elezioni-usa-match-tra-biden-e-trump/\n2023-12-07\nSentimento Neutro", "to": "leader"}, {"from": "Biden", "label": "essere", "title": "https://www.notiziegeopolitiche.net/elezioni-usa-match-tra-biden-e-trump/\n2023-12-07\nSentimento Neutro", "to": "presidente degli Stati Uniti"}, {"from": "Biden", "label": "essere", "title": "https://www.notiziegeopolitiche.net/elezioni-usa-match-tra-biden-e-trump/\n2023-12-07\nSentimento Neutro", "to": "presidente democratico"}, {"from": "Biden", "label": "incontrare", "title": "https://www.notiziegeopolitiche.net/asean-in-cambogia-dal-10-al-13-novembre-il-vertice-del-sud-est-asiatico/\n2022-11-12\nSentimento Neutro", "to": "Hun Sen"}, {"from": "Biden", "label": "incontrare", "title": "https://www.notiziegeopolitiche.net/cosa-sta-accadendo-in-kosovo/\n2023-06-02\nSentimento Neutro", "to": "Merkel"}, {"from": "Biden", "label": "incontrare", "title": "https://www.notiziegeopolitiche.net/colombia-il-gruppo-emc-e-pronto-ad-avviare-i-colloqui-di-pace-con-il-governo/\n2023-04-21\nSentimento Neutro", "to": "Petro"}, {"from": "Biden", "label": "incontrare", "title": "https://www.notiziegeopolitiche.net/alla-base-incontro-di-macron-con-biden-le-tensioni-economiche-fra-usa-e-ue/\n2022-12-12\nSentimento Neutro", "to": "Macron"}, {"from": "Biden", "label": "lanciare", "title": "https://www.notiziegeopolitiche.net/elezioni-usa-match-tra-biden-e-trump/\n2023-12-07\nSentimento Neutro", "to": "gara"}, {"from": "Biden", "label": "supportare_ostacolare", "title": "https://www.notiziegeopolitiche.net/119820-2/\n2023-10-04\nSentimento Positivo", "to": "Ucraina"}, {"from": "Biden", "label": "supportare_ostacolare", "title": "https://www.notiziegeopolitiche.net/dopo-la-visita-di-zelensky-negli-usa-crescono-le-preoccupazioni/\n2022-12-27\nSentimento Positivo", "to": "guerra"}, {"from": "Biden", "label": "supportare_ostacolare", "title": "https://www.notiziegeopolitiche.net/brasile-i-4-motivi-del-flirt-con-gli-usa/\n2023-09-23\nSentimento Positivo", "to": "diritti dei lavoratori"}, {"from": "Biden", "label": "avere", "title": "https://www.notiziegeopolitiche.net/brasile-lula-incontra-biden-in-un-clima-di-grande-collaborazione/\n2023-02-11\nSentimento Neutro", "to": "Lula"}, {"from": "Biden", "label": "discutere", "title": "https://www.notiziegeopolitiche.net/cina-con-gli-usa-e-vero-disgelo/\n2023-06-17\nSentimento Neutro", "to": "vertice"}, {"from": "Biden", "label": "discutere", "title": "https://www.notiziegeopolitiche.net/brasile-lula-incontra-biden-in-un-clima-di-grande-collaborazione/\n2023-02-11\nSentimento Neutro", "to": "invasione russa"}, {"from": "Biden", "label": "apprezzare_disprezzare", "title": "https://www.notiziegeopolitiche.net/elezioni-usa-match-tra-biden-e-trump/\n2023-12-07\nSentimento Positivo", "to": "condizioni fisiche"}, {"from": "Biden", "label": "apprezzare_disprezzare", "title": "https://www.notiziegeopolitiche.net/usa-salta-il-patteggiamento-di-hunter-biden-guai-per-il-padre/\n2023-08-18\nSentimento Positivo", "to": "figlio"}, {"from": "Biden", "label": "apprezzare_disprezzare", "title": "https://www.notiziegeopolitiche.net/biden-e-trump-rematch-per-la-casa-bianca/\n2023-04-29\nSentimento Positivo", "to": "frequenza"}, {"from": "Biden", "label": "apprezzare_disprezzare", "title": "https://www.notiziegeopolitiche.net/brasile-lula-incontra-biden-in-un-clima-di-grande-collaborazione/\n2023-02-11\nSentimento Positivo", "to": "rapporti"}, {"from": "Biden", "label": "commemorare_dimenticare", "title": "https://www.notiziegeopolitiche.net/usa-salta-il-patteggiamento-di-hunter-biden-guai-per-il-padre/\n2023-08-18\nSentimento Positivo", "to": "giorno"}, {"from": "Biden", "label": "prevedere", "title": "https://www.notiziegeopolitiche.net/elezioni-usa-match-tra-biden-e-trump/\n2023-12-07\nSentimento Neutro", "to": "elezioni"}, {"from": "i discorsi di Joe Biden", "label": "avere", "title": "https://www.notiziegeopolitiche.net/cina-con-gli-usa-e-vero-disgelo/\n2023-06-17\nSentimento Neutro", "to": "Il pubblico"}, {"from": "Hunter Biden", "label": "essere", "title": "https://www.notiziegeopolitiche.net/usa-salta-il-patteggiamento-di-hunter-biden-guai-per-il-padre/\n2023-08-18\nSentimento Neutro", "to": "soggetto di attenzione mediatica"}, {"from": "Hunter Biden", "label": "avere", "title": "https://www.notiziegeopolitiche.net/usa-salta-il-patteggiamento-di-hunter-biden-guai-per-il-padre/\n2023-08-18\nSentimento Neutro", "to": "guai"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
