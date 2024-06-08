@@ -19,7 +19,8 @@ def get_graph(conn, entity_name, start_date_str, end_date_str, selected_labels_s
         result = session.run(query)
         return result.data()
     
-def get_full_graph(conn):
+@st.cache_data
+def get_full_graph(_conn):
     query = (
         """
         MATCH (s)-[r]-(t)
@@ -29,11 +30,12 @@ def get_full_graph(conn):
         """
     )
 
-    with conn.session() as session:
+    with _conn.session() as session:
         result = session.run(query)
         return result.data()
 
-def get_nodi_connessi_mese_anno(conn, anno, mese):
+@st.cache_data
+def get_nodi_connessi_mese_anno(_conn,anno, mese):
     mese_str = f"{anno}-{mese:02}"  # Formatta il mese come "YYYY-MM"
     query = (
         f"""
@@ -46,11 +48,12 @@ def get_nodi_connessi_mese_anno(conn, anno, mese):
         """
     )
 
-    with conn.session() as session:
+    with _conn.session() as session:
         result = session.run(query)
         return [(record["nome_nodo"], record["connessioni"],record["categoria"]) for record in result]
 
-def get_graph_statistics(driver):
+
+def get_graph_statistics(_driver):
     # La query Cypher
     query = """
     // Numero totale di nodi
@@ -78,7 +81,7 @@ def get_graph_statistics(driver):
         return list(tx.run(query))
 
     # Connettersi al database e eseguire la query
-    with driver.session() as session:
+    with _driver.session() as session:
         results = session.read_transaction(execute_query)
         return results
 

@@ -33,6 +33,8 @@ def get_record_data(record):
     }
 
 def main():
+    
+
     html_file_path = "filtered_graph.html"
     st.header('Graph Explorer', divider='blue')
     available_labels = list(colori_labels.keys())
