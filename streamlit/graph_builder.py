@@ -19,11 +19,9 @@ colori_labels = {
     'Incidente_o_Crisi': '#99ff80'
 }
 
-def build_graph(neo4j_uri,neo4j_user,neo4j_pass,entity_name, start_date_str, end_date_str, selected_labels_str,layout_method):
-    driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_pass))
-    with driver.session() as session:
-        data = get_graph(driver, entity_name, start_date_str, end_date_str, selected_labels_str)
-    driver.close()
+def build_graph(driver,entity_name, start_date_str, end_date_str, selected_labels_str,layout_method):
+    
+    data = get_graph(driver, entity_name, start_date_str, end_date_str, selected_labels_str)
     net = Network(notebook=True,height='380px', width='100%')
 
     for record in data:
@@ -57,6 +55,7 @@ def build_graph(neo4j_uri,neo4j_user,neo4j_pass,entity_name, start_date_str, end
         net.hrepulsion(node_distance=120, central_gravity=0.0, spring_length=100, spring_strength=0.01, damping=0.09)
     
     return net,data
+
 
 def build_full_graph(neo4j_uri,neo4j_user,neo4j_pass,layout_method):
     driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_pass))

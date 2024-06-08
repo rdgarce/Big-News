@@ -39,6 +39,7 @@ def main():
     st.header('Graph Explorer', divider='blue')
     available_labels = list(colori_labels.keys())
     # Lettura del contenuto del file HTML
+    driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_pass))
     with open(html_file_path, "r") as f:
         html_content = f.read()
 
@@ -49,7 +50,10 @@ def main():
     #entity_name = st.text_input("Inserisci il nome dell'entità:")
     col1,col2=st.columns([3,5])
     with col1:
-        entity_name = st.text_input("Inserisci il nome dell'entità che vuoi cercare:")
+        avlbl_entity = get_all_entities_name(driver)
+        entity_name = st.selectbox(
+        "Seleziona l'entità che desideri analizzare",
+        avlbl_entity)
     with col2:
         selected_date_range = st.slider("Seleziona intervallo di date di pubblicazione degli articoli", start_date, end_date, (start_date, end_date))
 
@@ -74,7 +78,7 @@ def main():
     selected_labels_str = ', '.join([f"'{label}'" for label in selected_labels])
 
 
-    net,data=build_graph(neo4j_uri,neo4j_user,neo4j_pass,entity_name, start_date_str, end_date_str, selected_labels_str,layout_method)
+    net,data=build_graph(driver,entity_name, start_date_str, end_date_str, selected_labels_str,layout_method)
     net.show(html_file_path)
     # Visualizzazione dell'HTML
     with container_graph:

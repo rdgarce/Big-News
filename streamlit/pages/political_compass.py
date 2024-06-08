@@ -10,27 +10,24 @@ def main():
     
     col1, col2 = st.columns([0.5, 0.5])
     with col1:
+        avlbl_rels = get_all_sentimental_rels(conn)
+        slctd_rel = st.selectbox(
+        "Seleziona la relazione che desideri analizzare",
+        avlbl_rels)
+
+    with col2:
         avlbl_entities = get_all_entities_name(conn)
         slctd_entity = st.selectbox(
         "Seleziona l'entità che desideri analizzare",
         avlbl_entities)
 
-    with col2:
-        avlbl_rels = get_all_sentimental_rels(conn)
-        slctd_rel = st.selectbox(
-        "Seleziona l'entità che desideri analizzare",
-        avlbl_rels)
-
     data = get_sentimental_entities(conn, slctd_entity, slctd_rel)
-    print(data)
-    sentiments = [x['sentiment'] for x in data]
-    names = [x['nome'] for x in data]
-    print(sentiments)
-    print(names)
-    d = list(zip(names, sentiments))
-    print(d)
-    chart_data = pd.DataFrame(d)
-    st.scatter_chart(data=([1,2,3,4],[1,2,3,4]),)
+    names = [item['nome'] for item in data]
+    sentiments = [item['sentiment'] for item in data]
+
+    df = pd.DataFrame(list(zip(names, sentiments)), columns=['Nome', 'Sentiment'])
+
+    st.scatter_chart(df, x='Nome', y='Sentiment')
 
 if __name__ == "__main__":
     main()
