@@ -90,6 +90,17 @@ def get_all_entities_name(_conn):
     return [x['p.nome'] for x in result]
 
 @st.cache_data
+def get_all_sentimental_rels(_conn):
+    query = """
+            MATCH ()-[r]-()
+            WHERE r.sentiment = 1 OR r.sentiment = -1
+            RETURN DISTINCT type(r)
+            """
+    with _conn.session() as session:
+        result = session.run(query).data()
+    return [x['type(r)'] for x in result]
+
+@st.cache_data
 def get_monthly_count_by_name(_conn, name : str, start_month : datetime,
                                 end_month : datetime):
 
