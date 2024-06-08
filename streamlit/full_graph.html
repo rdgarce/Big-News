@@ -120,6 +120,14 @@
     },
     "physics": {
         "enabled": true,
+        "hierarchicalRepulsion": {
+            "centralGravity": 0.0,
+            "damping": 0.09,
+            "nodeDistance": 120,
+            "springConstant": 0.01,
+            "springLength": 100
+        },
+        "solver": "hierarchicalRepulsion",
         "stabilization": {
             "enabled": true,
             "fit": true,

@@ -6,7 +6,8 @@ from credentials import *
 import pandas as pd
 
 def main():
-    st.header('Trend view', divider='blue')
+    st.header('Trend view :chart_with_upwards_trend:', divider='blue')
+    st.markdown(""" Questa pagina consente di selezionare un'entità presente nel database e visualizzare l'andamento temporale delle citazioni negli articoli riferite ad essa.""")
     conn = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_pass))
     avlbl_entity = get_all_entities_name(conn)
     slctd_entity = st.selectbox(

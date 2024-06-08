@@ -36,7 +36,11 @@ def main():
     
 
     html_file_path = "filtered_graph.html"
-    st.header('Graph Explorer', divider='blue')
+    st.header('Graph Explorer :ringed_planet:', divider='blue')
+    st.markdown("""Questa pagina consente di costruire dinamicamente un grafo selezionando un nodo radice, un intervallo temporale di pubblicazione delle notizie e un insieme di categorie di entità con cui si vogliono cercare le relazioni.
+I nodi del grafo sono interattivi e sulle relazioni è possibile visualizzare la data e il link dell'articolo originale da cui proviene l'informazione. Viene inoltre fornita una visualizzazione alternativa tabellare delle informazioni rappresentate nel grafo costruito.
+""")
+    
     available_labels = list(colori_labels.keys())
     # Lettura del contenuto del file HTML
     driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_pass))

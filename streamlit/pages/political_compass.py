@@ -5,7 +5,11 @@ from gquery import get_all_entities_name, get_all_sentimental_rels, get_sentimen
 import pandas as pd
 
 def main():
-    st.header('Political compass', divider='blue')
+    st.header('Political compass :compass:', divider='blue')
+    st.markdown(""" Questa pagina consente di visualizzare il sentimento di diverse entità rispetto ad un'entità specificata.Attraverso la selezione
+                di una coppia di relazioni contrarie e di una entità target viene visualizzato un grafico che quantifica , per ogni entità collegata a quella target, il sentimento calcolato in base al numero di volta che la connessione è stata positiva o negativa.
+                """)
+    
     conn = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_pass))
     
     col1, col2 = st.columns([0.5, 0.5])

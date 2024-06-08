@@ -52,6 +52,24 @@ def get_nodi_connessi_mese_anno(_conn,anno, mese):
         result = session.run(query)
         return [(record["nome_nodo"], record["connessioni"],record["categoria"]) for record in result]
 
+@st.cache_data
+def get_luoghi_mese_anno(_conn, anno, mese):
+    mese_str = f"{anno}-{mese:02}"  # Formatta il mese come "YYYY-MM"
+    query = (
+        f"""
+        MATCH (s:Località)-[r]-(t)
+        WHERE r.data STARTS WITH '{mese_str}'
+        AND s.nome =~ '^[A-Z].*'  // Assicura che il nome del nodo inizi con una lettera maiuscola
+        RETURN s.nome as nome_nodo, COUNT(r) as connessioni, labels(s) as categoria
+        ORDER BY connessioni DESC
+        LIMIT 200
+        """
+    )
+
+    with _conn.session() as session:
+        result = session.run(query)
+        return [(record["nome_nodo"], record["connessioni"], record["categoria"]) for record in result]
+
 
 def get_graph_statistics(_driver):
     # La query Cypher
