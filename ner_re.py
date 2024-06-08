@@ -299,6 +299,9 @@ if __name__ == "__main__":
         Redis(host=redis_host, port=redis_port, password=redis_psw)
     )
 
+    print("Numero di Batch nella coda principale: ",queue.list_len())
+    print("Numero di Batch nella coda di Backup: ",queue.BU_list_len())
+    
     # Pop del Batch di articoli
     reference, articles = queue.pop_batch()
     if not articles:

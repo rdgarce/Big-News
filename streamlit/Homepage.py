@@ -55,7 +55,14 @@ def get_statistiche():
 
 
 def main():
-    
+    st.sidebar.markdown(
+        f"""
+        <div style="display: flex; justify-content: center;">
+            ciao
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
     st.title("Benvenuto")
 # Introduzione
     st.write("""
