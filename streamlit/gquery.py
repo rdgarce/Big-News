@@ -128,3 +128,20 @@ def get_monthly_count_by_name(_conn, name : str, start_month : datetime,
     with _conn.session() as session:
         result = session.run(query).data()
     return result
+
+@st.cache_data
+def get_sentimental_entities(_conn, object_entity : str, sentimental_relation : str):
+    
+    assert isinstance(object_entity, str) and \
+           isinstance(sentimental_relation, str)
+    
+    query = f"""
+            MATCH (p)-[r]->(k)
+            WHERE k.nome = '{object_entity}' AND
+            type(r) = '{sentimental_relation}'
+            RETURN p.nome as nome, sum(r.sentiment) as sentiment, collect(r.link) as links
+            """
+
+    with _conn.session() as session:
+        result = session.run(query).data()
+    return result
