@@ -88,8 +88,8 @@
                   
 
                   // parsing and collecting nodes and edges from the python
-                  nodes = new vis.DataSet([{"borderWidth": 0, "color": "#7fa7c9", "id": "Putin", "label": "Putin", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#99ffab", "id": "Mosca", "label": "Mosca", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "discorso di Putin", "label": "discorso di Putin", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#99ffab", "id": "Cremlino", "label": "Cremlino", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "Russia", "label": "Russia", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "presidente", "label": "presidente", "shape": "dot", "title": "Persona"}, {"borderWidth": 0, "color": "#7fa7c9", "id": "Mohammed Bin Salman", "label": "Mohammed Bin Salman", "shape": "dot", "title": "Persona"}]);
-                  edges = new vis.DataSet([{"from": "Putin", "label": "incontrare", "title": "https://www.notiziegeopolitiche.net/cina-e-russia-sempre-piu-unite/\n2023-06-14\nSentimento Neutro", "to": "Mosca"}, {"from": "discorso di Putin", "label": "riferire", "title": "https://www.notiziegeopolitiche.net/ucraina-putin-non-colpiremo-paesi-nato-ma-attenti-agli-f-16/\n2024-03-28\nSentimento Neutro", "to": "Cremlino"}, {"from": "Putin", "label": "essere", "title": "https://www.notiziegeopolitiche.net/pino-cabras-democrazia-sovrana-e-popolare-macche-putin-e-lue-ad-aver-compromesso-la-propria-democrazia/\n2024-03-20\nSentimento Neutro", "to": "Russia"}, {"from": "Putin", "label": "essere", "title": "https://www.notiziegeopolitiche.net/russia-arabia-saudita-putin-in-visita-a-riad/\n2023-12-07\nSentimento Neutro", "to": "presidente"}, {"from": "Putin", "label": "incontrare", "title": "https://www.notiziegeopolitiche.net/russia-arabia-saudita-putin-in-visita-a-riad/\n2023-12-07\nSentimento Neutro", "to": "Mohammed Bin Salman"}]);
+                  nodes = new vis.DataSet([]);
+                  edges = new vis.DataSet([]);
 
                   nodeColors = {};
                   allNodes = nodes.get({ returnType: "Object" });
@@ -120,14 +120,6 @@
     },
     "physics": {
         "enabled": true,
-        "hierarchicalRepulsion": {
-            "centralGravity": 0.0,
-            "damping": 0.09,
-            "nodeDistance": 120,
-            "springConstant": 0.01,
-            "springLength": 100
-        },
-        "solver": "hierarchicalRepulsion",
         "stabilization": {
             "enabled": true,
             "fit": true,

@@ -249,23 +249,23 @@ def process_articles(articles,max_attempts=2,chunk_size=1200,last_check=True):
         gc.collect()
         max_attempts = 2
         attempts = 0
-        chunks = chunk_article(article, chunk_size)
 
-        # Utilizzo di tqdm per la barra di caricamento dei chunk
-        for i, chunk in enumerate(tqdm(chunks, desc=f"Processing Chunks for Article {j+1}", leave=False)):
-            triple_chunk = []
-            attempts = 0
-            while attempts < max_attempts and not triple_chunk:
-                triple_chunk = estrai_triple(chunk['text'], chunk['date'], chunk['link'],last_check)
-                attempts += 1
-            if triple_chunk:
-                print(f"Triple estratte dal Chunk {i+1} dell'articolo {j+1}")
-            for istance in triple_chunk:
-                table_data.append([istance.entity1, istance.category1, istance.relation, istance.sentiment, istance.entity2, istance.category2, istance.data, istance.link])
+        if lunghezza_text < 3000:
+            chunks = chunk_article(article, chunk_size)
+            for i, chunk in enumerate(tqdm(chunks, desc=f"Processing Chunks for Article {j+1}", leave=False)):
+                triple_chunk = []
+                attempts = 0
+                while attempts < max_attempts and not triple_chunk:
+                    triple_chunk = estrai_triple(chunk['text'], chunk['date'], chunk['link'],last_check)
+                    attempts += 1
+                if triple_chunk:
+                    print(f"Triple estratte dal Chunk {i+1} dell'articolo {j+1}")
+                for istance in triple_chunk:
+                    table_data.append([istance.entity1, istance.category1, istance.relation, istance.sentiment, istance.entity2, istance.category2, istance.data, istance.link])
+                    torch.cuda.empty_cache()
+                print(tabulate(table_data, headers="firstrow", tablefmt="grid"))
+                triple_totali += triple_chunk
                 torch.cuda.empty_cache()
-            print(tabulate(table_data, headers="firstrow", tablefmt="grid"))
-            triple_totali += triple_chunk
-            torch.cuda.empty_cache()
 
     return triple_totali
 

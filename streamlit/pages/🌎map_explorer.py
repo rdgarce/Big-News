@@ -305,7 +305,7 @@ def main():
     df_connessioni = pd.DataFrame([(istanza["nome"], istanza["connessioni"]) for istanza in data], columns=["Nome", "Numero_connessioni"])
     col1,col2=st.columns([0.65,0.35])
     with col1:
-        st.bar_chart(df_map,x="nome",y="connessioni", use_container_width=True, color="colore")
+        st.bar_chart(df_map,x="nome",y="connessioni", use_container_width=True, color="#6697f2")
     with col2:
         st.write(df_connessioni)
 if __name__ == "__main__":
