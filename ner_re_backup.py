@@ -176,8 +176,7 @@ def string_to_vector(string,data,link):
 
     return vector
 
-# Funzione per la divisione degli articoli in chunk  
-def chunk_article(article,max_chunk_size=500):
+def chunk_article(article, max_chunk_size=500):
     title = article["title"]
     link = article["link"]
     date = article["date"]
@@ -185,38 +184,40 @@ def chunk_article(article,max_chunk_size=500):
 
     # Lista per memorizzare i chunk
     chunks = []
-    print("titolo dell'articolo: ",title)
+
     # Inizializza il primo chunk con il titolo dell'articolo
     current_chunk_text = title + ". "
     current_chunk_size = len(current_chunk_text)
     remaining_text = text
 
     while remaining_text:
-        next_period_index = remaining_text.find('.')
-        if next_period_index == -1 or (current_chunk_size + next_period_index + 1) > max_chunk_size:
-            # Aggiungi il chunk corrente ai chunks e inizia un nuovo chunk
+        if current_chunk_size + len(remaining_text) <= max_chunk_size:
+            current_chunk_text += remaining_text
             chunks.append({
                 "text": current_chunk_text.strip(),
                 "link": link,
                 "date": date
             })
-            current_chunk_text = ''
-            current_chunk_size = 0
-        else:
-            # Aggiungi la porzione al chunk corrente
-            current_chunk_text += remaining_text[:next_period_index + 1]
-            current_chunk_size += next_period_index + 1
-            
-        remaining_text = remaining_text[next_period_index + 1:].strip()
+            break
+        
+        next_period_index = remaining_text[:max_chunk_size - current_chunk_size].rfind('.')
+        
+        if next_period_index == -1:  # Se non trova un punto, tronca
+            next_period_index = max_chunk_size - current_chunk_size - 1
 
-    if current_chunk_text:
+        current_chunk_text += remaining_text[:next_period_index + 1]
         chunks.append({
             "text": current_chunk_text.strip(),
             "link": link,
             "date": date
         })
 
+        remaining_text = remaining_text[next_period_index + 1:].strip()
+        current_chunk_text = ''
+        current_chunk_size = 0
+
     return chunks
+
 
 # Funzione che estrae le triple dal testo del chunk
 def estrai_triple(raw_text_chunk,data,link,last_check):
