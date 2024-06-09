@@ -245,8 +245,6 @@ def process_articles(articles,max_attempts=2,chunk_size=1200,last_check=True):
     for j, article in enumerate(tqdm(articles, desc="Processing Articles")):
         lunghezza_text = len(article["text"])
         print("La lunghezza dell'articolo", j+1, "è:", lunghezza_text)
-        #torch.cuda.empty_cache()
-        #gc.collect()
         max_attempts = 2
         attempts = 0
 
@@ -262,10 +260,8 @@ def process_articles(articles,max_attempts=2,chunk_size=1200,last_check=True):
                 print(f"Triple estratte dal Chunk {i+1} dell'articolo {j+1}")
             for istance in triple_chunk:
                 table_data.append([istance.entity1, istance.category1, istance.relation, istance.sentiment, istance.entity2, istance.category2, istance.data, istance.link])
-                torch.cuda.empty_cache()
             print(tabulate(table_data, headers="firstrow", tablefmt="grid"))
             triple_totali += triple_chunk
-            torch.cuda.empty_cache()
 
     return triple_totali
 
