@@ -2,11 +2,12 @@ from neo4j import GraphDatabase
 import streamlit as st
 from datetime import datetime, timedelta
 
-def get_graph(conn, entity_name, start_date_str, end_date_str, selected_labels_str):
+@st.cache_data
+def get_graph(_conn, entity_name, start_date_str, end_date_str, selected_labels_str):
     query = (
         f"""
         MATCH (s)-[r]-(t)
-        WHERE (s.nome CONTAINS '{entity_name}')
+        WHERE (s.nome = '{entity_name}')
         AND r.data >= '{start_date_str}' AND r.data <= '{end_date_str}'
         AND (ANY(label IN labels(t) WHERE label IN [{selected_labels_str}]))
         RETURN s, r, t, properties(r) as attributi_relazione,
@@ -15,7 +16,7 @@ def get_graph(conn, entity_name, start_date_str, end_date_str, selected_labels_s
         """
     )
 
-    with conn.session() as session:
+    with _conn.session() as session:
         result = session.run(query)
         return result.data()
     
@@ -35,7 +36,7 @@ def get_full_graph(_conn):
         return result.data()
 
 @st.cache_data
-def get_nodi_connessi_mese_anno(_conn,anno, mese):
+def get_nodi_connessi_mese_anno(_conn, anno, mese):
     mese_str = f"{anno}-{mese:02}"  # Formatta il mese come "YYYY-MM"
     query = (
         f"""
@@ -70,8 +71,7 @@ def get_luoghi_mese_anno(_conn, anno, mese):
         result = session.run(query)
         return [(record["nome_nodo"], record["connessioni"], record["categoria"]) for record in result]
 
-
-def get_graph_statistics(_driver):
+def get_graph_statistics(_conn):
     # La query Cypher
     query = """
     // Numero totale di nodi
@@ -99,7 +99,7 @@ def get_graph_statistics(_driver):
         return list(tx.run(query))
 
     # Connettersi al database e eseguire la query
-    with _driver.session() as session:
+    with _conn.session() as session:
         results = session.read_transaction(execute_query)
         return results
 
@@ -162,4 +162,6 @@ def get_sentimental_entities(_conn, object_entity : str, sentimental_relation : 
 
     with _conn.session() as session:
         result = session.run(query).data()
-    return result
+    return [item['nome'] for item in result],      \
+           [item['sentiment'] for item in result], \
+           [item['links'] for item in result]

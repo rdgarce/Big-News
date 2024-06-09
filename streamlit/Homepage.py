@@ -44,8 +44,6 @@ def get_statistiche(driver):
     
     return total_nodes,total_relationships,node_categories,relationship_types
 
-
-
 def main():
     st.title("Benvenuto")
     col1,col2=st.columns([0.28,0.72])
@@ -53,12 +51,12 @@ def main():
         st.image('logo.png')
     with col2:
         st.write("""
-            Questa Dashboard consente di esplorare dinamiche di geopolitica internazionale, fornendo strumenti per l'analisi e la visualizzazione delle informazioni contenute in un Knowledge Graph costruito attraverso l'estrazione di Entità e Relazioni da testi di articoli di news in lingua italiana.
+            Questa Dashboard consente di esplorare dinamiche di geopolitica internazionale fornendo strumenti per l'analisi e la visualizzazione delle informazioni contenute in un Knowledge Graph costruito attraverso l'estrazione di Entità e Relazioni da testi di articoli di news in lingua italiana.
             
-            La HomePage offre:
+            La Home page offre:
             - Statistiche sommarie sullo stato attuale del Grafo di conoscenza.
             - Rappresentazione parziale dello stato attuale del grafo.
-            - Strumento per visualizzare le Entità più citate al variare dei mesi.
+            - Visualizzazione delle Entità più citate al variare dei mesi.
         """)
 
     driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_pass))

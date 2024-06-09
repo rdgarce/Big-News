@@ -259,11 +259,11 @@ paesi_coordinate = {
 
 def main():
     driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_pass))
-    st.header("""Mappa delle Menzioni Geografiche :earth_africa:""", divider='blue')
-    st.markdown(""" Questa pagina consente di filtrare per mese di pubblicazione degli e visualizzare i Paesi menzionati su una mappa mondiale 
-              con pallini colorati diversamente in base al numero di connessioni.La Mappa è accompagnata da un grafico a barre che mostra
+    st.header("""Map Explorer :earth_africa:""", divider='blue')
+    st.markdown("""Il Map Explorer consente di filtrare per mese di pubblicazione degli articoli e visualizzare i Paesi menzionati su una mappa mondiale 
+              con pallini colorati diversamente in base al numero di connessioni. La mappa è accompagnata da un grafico a barre che mostra
                il numero di connessioni per ciascun Paese selezionato, insieme a una rappresentazione tabellare dettagliata dei Paesi e delle connessioni""")
-    start_date = date(2022, 8, 1)
+    start_date = date(2022, 9, 1)
     end_date = date.today()
 
     # Slider per selezionare la data
