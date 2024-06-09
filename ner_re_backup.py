@@ -185,7 +185,7 @@ def chunk_article(article,max_chunk_size=500):
 
     # Lista per memorizzare i chunk
     chunks = []
-    print("titolo dell'articolo:",title)
+    print("titolo dell'articolo: ",title)
     # Inizializza il primo chunk con il titolo dell'articolo
     current_chunk_text = title + ". "
     current_chunk_size = len(current_chunk_text)
@@ -206,7 +206,8 @@ def chunk_article(article,max_chunk_size=500):
             # Aggiungi la porzione al chunk corrente
             current_chunk_text += remaining_text[:next_period_index + 1]
             current_chunk_size += next_period_index + 1
-            remaining_text = remaining_text[next_period_index + 1:].strip()
+            
+        remaining_text = remaining_text[next_period_index + 1:].strip()
 
     if current_chunk_text:
         chunks.append({
