@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 380px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"borderWidth": 0, "color": "#99ffab", "id": "Italia", "label": "Italia", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "regione", "label": "regione", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "cultura", "label": "cultura", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "Paesi", "label": "Paesi", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "Romania", "label": "Romania", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "relazioni internazionali", "label": "relazioni internazionali", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "Armenia", "label": "Armenia", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "paese", "label": "paese", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "nazione", "label": "nazione", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "Paese", "label": "Paese", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "autoreferenzialit\u00e0", "label": "autoreferenzialit\u00e0", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "nazione pi\u00f9 bersagliata", "label": "nazione pi\u00f9 bersagliata", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "terzo Paese", "label": "terzo Paese", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "Israele", "label": "Israele", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "Ucraina", "label": "Ucraina", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "Stati Uniti", "label": "Stati Uniti", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "Turchia", "label": "Turchia", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "relazioni con Azerbaigian", "label": "relazioni con Azerbaigian", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "Azerbaijan", "label": "Azerbaijan", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "terra", "label": "terra", "shape": "dot", "title": "Localit\u00e0"}, {"borderWidth": 0, "color": "#99ffab", "id": "Roma", "label": "Roma", "shape": "dot", "title": "Localit\u00e0"}]);
+                  edges = new vis.DataSet([{"from": "Italia", "label": "promuovere_boicottare", "title": "https://www.notiziegeopolitiche.net/bosnia-erzegovina-inaugurato-un-ufficio-ministero-dellinterno-italiano-a-sarajevo/\n2024-05-29\nSentimento Positivo", "to": "regione"}, {"from": "Italia", "label": "apprezzare_disprezzare", "title": "https://www.notiziegeopolitiche.net/missione-a-new-york-del-sottosegretario-agli-affari-esteri-e-alla-cooperazione-internazionale-maria-tripodi/\n2023-07-19\nSentimento Positivo", "to": "cultura"}, {"from": "Italia", "label": "apprezzare_disprezzare", "title": "https://www.notiziegeopolitiche.net/missione-a-new-york-del-sottosegretario-agli-affari-esteri-e-alla-cooperazione-internazionale-maria-tripodi/\n2023-07-19\nSentimento Positivo", "to": "Paesi"}, {"from": "Italia", "label": "apprezzare_disprezzare", "title": "https://www.notiziegeopolitiche.net/cirielli-incontra-lambasciatrice-di-romania-a-roma-dancau/\n2023-02-08\nSentimento Positivo", "to": "Romania"}, {"from": "Italia", "label": "apprezzare_disprezzare", "title": "https://www.notiziegeopolitiche.net/missione-a-new-york-del-sottosegretario-agli-affari-esteri-e-alla-cooperazione-internazionale-maria-tripodi/\n2023-07-19\nSentimento Positivo", "to": "relazioni internazionali"}, {"from": "Italia", "label": "investire_tagliare", "title": "https://www.notiziegeopolitiche.net/114277-2/\n2022-10-26\nSentimento Positivo", "to": "Armenia"}, {"from": "Italia", "label": "essere", "title": "https://www.notiziegeopolitiche.net/azerbaijan-aliyev-in-italia-per-rafforzare-il-partenariato-strategico/\n2022-09-03\nSentimento Neutro", "to": "paese"}, {"from": "Italia", "label": "essere", "title": "https://www.notiziegeopolitiche.net/cirielli-incontra-lambasciatrice-di-romania-a-roma-dancau/\n2023-02-08\nSentimento Neutro", "to": "nazione"}, {"from": "Italia", "label": "essere", "title": "https://www.notiziegeopolitiche.net/arabia-saudita-commissione-diritti-umani-delinea-mandato-e-ambizioni/\n2024-05-20\nSentimento Neutro", "to": "Paese"}, {"from": "Italia", "label": "essere", "title": "https://www.notiziegeopolitiche.net/e-se-si-sciogliesse-israele/\n2023-11-01\nSentimento Neutro", "to": "autoreferenzialit\u00e0"}, {"from": "Italia", "label": "essere", "title": "https://www.notiziegeopolitiche.net/guerra-informatica-il-nuovo-fronte-della-geopolitica-globale/\n2023-07-31\nSentimento Neutro", "to": "nazione pi\u00f9 bersagliata"}, {"from": "Italia", "label": "essere", "title": "https://www.notiziegeopolitiche.net/italia-2022-il-paese-del-terrorismo-anarchico/\n2023-07-09\nSentimento Neutro", "to": "terzo Paese"}, {"from": "Italia", "label": "supportare_ostacolare", "title": "https://www.notiziegeopolitiche.net/gaza-il-racconto-di-francesco-mazzarini-ho-i-suoceri-a-gaza-ore-di-angoscia/\n2023-11-07\nSentimento Positivo", "to": "Israele"}, {"from": "Italia", "label": "supportare_ostacolare", "title": "https://www.notiziegeopolitiche.net/cirielli-presiede-la-v-riunione-del-comitato-congiunto-per-la-cooperazione-allo-sviluppo-del-2023/\n2023-10-09\nSentimento Positivo", "to": "Ucraina"}, {"from": "Italia", "label": "avere", "title": "https://www.notiziegeopolitiche.net/egointernational-in-crescita-lexport-di-beni-strumentali-e-intermedi-2/\n2023-03-09\nSentimento Neutro", "to": "Stati Uniti"}, {"from": "Italia", "label": "avere", "title": "https://www.notiziegeopolitiche.net/egointernational-in-crescita-lexport-di-beni-strumentali-e-intermedi-2/\n2023-03-09\nSentimento Neutro", "to": "Turchia"}, {"from": "Italia", "label": "avere", "title": "https://www.notiziegeopolitiche.net/azerbaijan-aliyev-in-italia-per-rafforzare-il-partenariato-strategico/\n2022-09-03\nSentimento Neutro", "to": "relazioni con Azerbaigian"}, {"from": "Italia", "label": "avere", "title": "https://www.notiziegeopolitiche.net/azerbaijan-aliyev-in-italia-per-rafforzare-il-partenariato-strategico/\n2022-09-03\nSentimento Neutro", "to": "Azerbaijan"}, {"from": "Italia", "label": "commemorare_dimenticare", "title": "https://www.notiziegeopolitiche.net/gaza-continua-la-mattanza-israeliana-32mila-i-morti/\n2024-03-20\nSentimento Positivo", "to": "terra"}, {"from": "Italia", "label": "commemorare_dimenticare", "title": "https://www.notiziegeopolitiche.net/6-settembre-1955-pogrom-contro-i-cristiani-di-istanbul/\n2023-09-06\nSentimento Negativo", "to": "Roma"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
